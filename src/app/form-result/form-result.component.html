@@ -1,0 +1,79 @@
+<mat-accordion>
+  <!-- Basics -->
+  <mat-expansion-panel>
+
+    <!-- Head -->
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Basics
+      </mat-panel-title>
+      <mat-panel-description>
+        Choose your distribution and Repository
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <!-- Body -->
+    <mat-form-field>
+      <mat-label>Distribution</mat-label>
+      <mat-select id="basicsBody" [(ngModel)]="basics.distro">
+        <mat-option *ngFor="let distro of supportedDistros" [value]="distro.value">{{distro.viewValue}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [disabled]="basics.distro === ''">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Repository Details
+      </mat-panel-title>
+      <mat-panel-description></mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>I'm visible because I am open</p>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<div>
+  <label>Distro: </label>
+  <select>
+    <option>Ubuntu</option>
+    <option>Debian</option>
+    <option>Arch</option>
+    <option>Fedora</option>
+  </select>
+
+  <label>KeyWord: </label>
+  <input
+    type="text"
+    placeholder="enter search key..."
+    (input)="searchPosts($event.target.value)"
+  >
+
+  <label>Match-Case </label>
+  <input type="checkbox">
+
+  <label>Search in </label>
+  <select (change)="exactMatchNeeded($event.target.value)">
+    <option>package name</option>
+    <option>package description</option>
+    <option>both(package name and description)</option>
+  </select>
+  <div *ngIf="selectedForCheckBox">
+    <label>Exact match: </label><input type="checkbox">
+  </div>
+  <div>
+    <small id="more">More...</small>
+  </div>
+</div>
+<ng-container *ngIf="(blogPosts$ | async) as blogPosts">
+  <p>Search result:</p>
+  <h4>Exact</h4>
+  <ul>
+    <li>{{blogPosts.results.exact?.name || 'Not found'}}</li>
+  </ul>
+  <h4>Other</h4>
+  <ol>
+    <li *ngFor="let res of blogPosts.results.other">{{res.name}}</li>
+  </ol>
+</ng-container>
