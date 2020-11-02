@@ -1,3 +1,9 @@
-<h1 id="head">Scripty</h1>
-<app-nav-bar></app-nav-bar>
-<app-form-result></app-form-result>
+<mat-toolbar color="primary">
+  <span>Scripty</span>
+</mat-toolbar>
+
+<main>
+  <div *ngIf="isLoading">
+    <mat-spinner *ngif="isloading"></mat-spinner>
+  </div>
+</main>
