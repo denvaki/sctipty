@@ -1,9 +1,9 @@
 <mat-toolbar color="primary">
   <span>Scripty</span>
-</mat-toolbar>
-
-<main>
-  <div *ngIf="isLoading">
-    <mat-spinner *ngif="isloading"></mat-spinner>
+  <span class="spacer"></span>
+  <div id="routes">
+    <a class="route-margin" *ngFor="let route of routes" [routerLink]="route.link" [matBadgeHidden]="route.matBadgeHidden" [matBadge]="route.badgeValue" matBadgeColor="accent" matBadgeOverlap="false">{{route.label}}</a>
   </div>
-</main>
+
+</mat-toolbar>
+<router-outlet></router-outlet>
