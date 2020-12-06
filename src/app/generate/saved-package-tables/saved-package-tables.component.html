@@ -1,0 +1,110 @@
+<div class="center">
+  <div id="savedPackagesTable">
+    <h1>Distribution: {{distribution}}</h1>
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 fulfill">
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Package">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Package</th>
+        <td mat-cell *matCellDef="let row"> {{row.Package}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Version">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Version</th>
+        <td mat-cell *matCellDef="let row"> {{row.Version}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Installed_Size">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Installed Size</th>
+        <td mat-cell *matCellDef="let row"> {{row.Installed_Size}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Release">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Release</th>
+        <td mat-cell *matCellDef="let row"> {{row.Release}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Maintainer">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Maintainer</th>
+        <td mat-cell *matCellDef="let row"> {{row.Maintainer}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Architecture">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Architecture</th>
+        <td mat-cell *matCellDef="let row"> {{row.Architecture}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Description</th>
+        <td mat-cell *matCellDef="let row"> {{row.Description}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Homepage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Homepage</th>
+        <td mat-cell *matCellDef="let row"> {{row.Homepage}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Section">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Section</th>
+        <td mat-cell *matCellDef="let row"> {{row.Section}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Depends">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Depends</th>
+        <td mat-cell *matCellDef="let row"> {{row.Depends}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Conflicts">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Conflicts</th>
+        <td mat-cell *matCellDef="let row"> {{row.Conflicts}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No package saved to generate script. Please use <a routerLink="/search">search</a> to find and save packages.</td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <br>
+
+    <button mat-stroked-button color="accent" (click)="deleteSelectedPackages()" >Delete selected</button>
+    &nbsp;&nbsp;
+    <button mat-stroked-button color="accent" (click)="generateScript()" >Generate</button>
+
+  </div>
+
+  <div *ngIf="isLoading">
+    <mat-spinner class="center"></mat-spinner>
+  </div>
+  <div *ngIf="!errorMsg && installationSrcipt">
+    <br>
+    <mat-label>Execute following command:</mat-label>
+    <div id="urlArea">
+      <pre #urlArea>curl -s "{{urlInput}}" | sudo bash </pre><button mat-stroked-button color="accent" (click)="copyText(urlArea)" >Copy</button>
+    </div>
+
+    <br>
+    <button mat-stroked-button color="accent" (click)="showScript()" >Show Script</button>
+    <pre *ngIf="showScriptArea" id="scriptArea">{{installationSrcipt}}</pre>
+  </div>
+
+
+</div>

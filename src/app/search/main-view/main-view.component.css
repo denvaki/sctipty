@@ -1,0 +1,23 @@
+.center{
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+
+}
+
+.field-margin{
+  position: center;
+  text-align: center;
+  display:inline-block;
+  margin: 2%;
+}
+
+.selectors{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#packageInput{
+  width: 80%;
+}

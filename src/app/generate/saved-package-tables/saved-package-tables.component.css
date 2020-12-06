@@ -1,0 +1,22 @@
+.center{
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+
+}
+.fulfill{
+  width: 100%;
+}
+
+#savedPackagesTable{
+  margin-top: 5%;
+}
+#scriptArea, #urlArea{
+  background-color: white;
+}
+
+#urlArea{
+  width: max-content;
+  padding: 1%;
+  display: flex;
+}

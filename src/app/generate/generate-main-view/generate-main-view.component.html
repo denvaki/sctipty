@@ -1,0 +1,9 @@
+<h1>Generate Script</h1>
+
+<div *ngIf="savedDistroPackage.length">
+  <app-saved-package-tables *ngFor="let distroPkgObj of savedDistroPackage" [data]="distroPkgObj.packages" [distribution]="distroPkgObj.distro"></app-saved-package-tables>
+</div>
+<div *ngIf="!savedDistroPackage.length">
+  No package saved to generate script. Please use <a routerLink="/search">search</a> to find and save packages.
+</div>
+
