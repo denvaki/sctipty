@@ -1,7 +1,7 @@
 {
   "/api/*": {
     "secure": false,
-    "target": "localhost:5999",
+    "target": "http://nodeserver:5999",
     "changeOrigin": true
   }
 }

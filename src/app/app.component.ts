@@ -1,15 +1,4 @@
-import {Component, AfterViewInit, ViewChild, ElementRef, OnInit} from '@angular/core';
-import {fromEvent, Observable, Subscription} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchAll, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {ScriptyApiService} from './services/scripty-api.service';
-import {FormControl, Validators} from '@angular/forms';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatCardModule} from '@angular/material/card';
-
-
-
-
-
+import {Component,  OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {catchError, map, tap} from 'rxjs/operators';
-import {operators} from 'rxjs/internal/Rx';
+import {catchError} from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -10,7 +9,7 @@ const httpOptions = {
     'Access-Control-Allow-Origin': '*'
   })
 };
-const BASE = 'http://localhost:5999/api/';
+const BASE = '/api/';
 
 
 @Injectable({
