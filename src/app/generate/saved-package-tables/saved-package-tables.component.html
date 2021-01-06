@@ -98,7 +98,7 @@
     <br>
     <mat-label>Execute following command:</mat-label>
     <div id="urlArea">
-      <pre #urlArea>curl -sg "{{urlInput}}" | sudo -E sh </pre><button mat-stroked-button color="accent" (click)="copyText(urlArea)" >Copy</button>
+      <pre #urlArea>curl -sg '{{urlInput}}' | sudo -E sh </pre><button mat-stroked-button color="accent" (click)="copyText(urlArea)" >Copy</button>
     </div>
 
     <br>
