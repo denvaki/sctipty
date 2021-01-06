@@ -104,7 +104,8 @@ export class SavedPackageTablesComponent implements OnInit, AfterViewInit {
           }else{
             this.errorMsg = null;
             this.installationSrcipt = '\n' + response + '\n' ;
-            this.urlInput = this.scriptyApi.URL;
+            let domain = window.location.hostname + (window.location.port ? ":" + window.location.port : '');
+            this.urlInput = 'http://' + domain + this.scriptyApi.URL;
           }
         })
     }

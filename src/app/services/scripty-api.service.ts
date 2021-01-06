@@ -52,7 +52,7 @@ export class ScriptyApiService {
   *   Generate script by package names
   */
   generateScript(distro:string, release:string, packageNames: string[], arch:string){
-    const packages: string = encodeURI(JSON.stringify(packageNames));
+    const packages: string = JSON.stringify(packageNames);
     let url: string = BASE + `generate?distro=${distro}&packages=${packages}`;
     if (release){
       url += `&release=${release}`;

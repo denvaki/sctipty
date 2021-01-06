@@ -98,11 +98,13 @@
     <br>
     <mat-label>Execute following command:</mat-label>
     <div id="urlArea">
-      <pre #urlArea>curl -s "{{urlInput}}" | sudo bash </pre><button mat-stroked-button color="accent" (click)="copyText(urlArea)" >Copy</button>
+      <pre #urlArea>curl -sg "{{urlInput}}" | sudo -E sh </pre><button mat-stroked-button color="accent" (click)="copyText(urlArea)" >Copy</button>
     </div>
 
     <br>
     <button mat-stroked-button color="accent" (click)="showScript()" >Show Script</button>
+    &nbsp;&nbsp;
+    <a [href]="urlInput" download="install_packages.sh" target="_blank"><button mat-stroked-button color="accent">Download</button></a>
     <pre *ngIf="showScriptArea" id="scriptArea">{{installationSrcipt}}</pre>
   </div>
 
