@@ -14,6 +14,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {RouterModule} from '@angular/router';
 import { SavedPackageTablesComponent } from './saved-package-tables/saved-package-tables.component';
+import 'prismjs/components/prism-bash'
 
 
 @NgModule({

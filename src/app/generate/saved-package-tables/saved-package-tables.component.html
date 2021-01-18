@@ -105,7 +105,9 @@
     <button mat-stroked-button color="accent" (click)="showScript()" >Show Script</button>
     &nbsp;&nbsp;
     <a [href]="urlInput" download="install_packages.sh" target="_blank"><button mat-stroked-button color="accent">Download</button></a>
-    <pre *ngIf="showScriptArea" id="scriptArea">{{installationSrcipt}}</pre>
+    <br/><br/>
+
+    <pre *ngIf="showScriptArea" id="scriptArea" ><code [innerHtml]="installationSrcipt"></code></pre>
   </div>
 
 

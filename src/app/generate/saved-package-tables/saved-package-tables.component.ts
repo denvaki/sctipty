@@ -4,6 +4,8 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {ScriptyApiService} from '../../services/scripty-api.service'
+import * as prism from 'prismjs';
+
 
 @Component({
   selector: 'app-saved-package-tables',
@@ -103,7 +105,7 @@ export class SavedPackageTablesComponent implements OnInit, AfterViewInit {
 
           }else{
             this.errorMsg = null;
-            this.installationSrcipt = '\n' + response + '\n' ;
+            this.installationSrcipt = prism.highlight(response + '\n', prism.languages.bash, 'bash');
             let domain = window.location.hostname + (window.location.port ? ":" + window.location.port : '');
             this.urlInput = 'http://' + domain + this.scriptyApi.URL;
           }
