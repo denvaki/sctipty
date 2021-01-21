@@ -13,11 +13,14 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
+import {MatRadioModule} from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
+import { FilenamesTableComponent } from './filenames-table/filenames-table.component';
 
 
 
 @NgModule({
-  declarations: [MainViewComponent, PackagesTableComponent],
+  declarations: [MainViewComponent, PackagesTableComponent, FilenamesTableComponent],
   imports: [
     CommonModule,
     MatInputModule,
@@ -29,7 +32,9 @@ import {MatButtonModule} from '@angular/material/button';
     MatPaginatorModule,
     MatSortModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatRadioModule,
+    FormsModule
   ],
   exports: [
     MainViewComponent,

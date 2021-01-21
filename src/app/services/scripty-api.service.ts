@@ -24,7 +24,7 @@ export class ScriptyApiService {
   /*
   *   Package search
   */
-  packageSearch(distro:string, release:string, packageName: string, arch:string) {
+  packageSearch(distro:string, release:string, packageName: string, arch:string, mode:string='strict') {
     const packages: string = encodeURI(JSON.stringify([packageName]));
     let url: string = BASE + `search?distro=${distro}&packages=${packages}`;
     if (release){
@@ -33,6 +33,10 @@ export class ScriptyApiService {
     if (arch){
       url += `&arch=${arch}`;
     }
+    if(mode){
+      url += `&mode=${mode}`;
+    }
+    
     return this.httpGetRequest(url).pipe(
         catchError(err => {
 
@@ -41,6 +45,29 @@ export class ScriptyApiService {
         })
     );
   }
+
+  fileSearch(distro:string, release:string, fileName: string, arch:string, mode:string='strict') {
+    const filenames: string = encodeURI(JSON.stringify([fileName]));
+    let url: string = BASE + `filesearch?distro=${distro}&filenames=${filenames}`;
+    if (release){
+      url += `&release=${release}`;
+    }
+    if (arch){
+      url += `&arch=${arch}`;
+    }
+    if(mode){
+      url += `&mode=${mode}`;
+    }
+
+    return this.httpGetRequest(url).pipe(
+        catchError(err => {
+
+          console.error(err);
+          return of(err);
+        })
+    );
+  }
+
 
   getMap(){
     return this.httpGetRequest(BASE + 'map');

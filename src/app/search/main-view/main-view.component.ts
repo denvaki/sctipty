@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ScriptyApiService} from '../../services/scripty-api.service';
-import {FormControl, Validators} from '@angular/forms';
-import {fromEvent, Observable} from 'rxjs';
-import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ScriptyApiService } from '../../services/scripty-api.service';
+import { FormControl, Validators } from '@angular/forms';
+import { fromEvent, Observable } from 'rxjs';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-view',
@@ -10,9 +10,13 @@ import {debounceTime, map, switchMap, tap} from 'rxjs/operators';
   styleUrls: ['./main-view.component.css']
 })
 export class MainViewComponent implements AfterViewInit, OnInit {
-  public isLoading = false;
-  @ViewChild('filter') filter: ElementRef;
-
+  public isPackageSearchLoading = false;
+  public isFileSearchLoading = false;
+  @ViewChild('packageNameInput') packageNameInput: ElementRef;
+  @ViewChild('fileNameInput') fileNameInput: ElementRef;
+  
+  public filenameMatchMode = 'strict';
+  public packagenameMatchMode = 'strict';
   public availableDistributions: any[];
   public availableReleases: any[];
   public availableArchitectures: string[];
@@ -22,35 +26,64 @@ export class MainViewComponent implements AfterViewInit, OnInit {
   private reqeustFieldArch = '';
   public chData
 
+
+
   constructor(private scriptyApi: ScriptyApiService) {
   }
 
   public distributionFormFieldControl = new FormControl('', Validators.required);
   public releaseFormFieldControl = new FormControl('');
   public architectureFormFieldControl = new FormControl('');
-  public packagenameFormFieldControl = new FormControl('', {validators: Validators.required});
+  public packagenameFormFieldControl = new FormControl('', { validators: Validators.required });
+  public filenameFormFieldControl = new FormControl('', { validators: Validators.required });
 
 
-  public userInput = {};
+  public fileUserInput = '';
+  public packageUserInput = {};
   public releaseArchCols: string[];
 
-  public data = [];
+  public packageData = [];
+  public fileData    = [];
 
   errorMsg;
 
   ngAfterViewInit() {
-    fromEvent(this.filter.nativeElement, 'input').pipe(
+    fromEvent(this.packageNameInput.nativeElement, 'input').pipe(
 
       debounceTime(1000),
       map((event: Event) => (event.target as HTMLInputElement)),
-      tap(() => this.isLoading = true),
+      tap(() => this.isPackageSearchLoading = true),
       switchMap(value => {
 
-        if (!value.value){
-          this.isLoading = false;
+        if (!value.value) {
+          this.isPackageSearchLoading = false;
           return [];
         }
-        this.triggerSearch(value.value);
+        this.triggerPackageSearch(value.value);
+
+
+        return new Observable();
+
+      })
+    )
+      .subscribe(() => {
+
+      })
+
+
+
+    fromEvent(this.fileNameInput.nativeElement, 'input').pipe(
+
+      debounceTime(1000),
+      map((event: Event) => (event.target as HTMLInputElement)),
+      tap(() => this.isFileSearchLoading = true),
+      switchMap(value => {
+
+        if (!value.value) {
+          this.isFileSearchLoading = false;
+          return [];
+        }
+        this.triggerFileSearch(value.value);
 
 
         return new Observable();
@@ -67,26 +100,27 @@ export class MainViewComponent implements AfterViewInit, OnInit {
     this.releaseFormFieldControl.disable();
     this.architectureFormFieldControl.disable();
     this.packagenameFormFieldControl.disable();
+    this.filenameFormFieldControl.disable();
 
-    this.scriptyApi.getMap().subscribe(data => {
-      console.log(data);
-      if (data.length > 0) {
-        this.availableDistributions = data;
+    this.scriptyApi.getMap().subscribe(packageData => {
+      console.log(packageData);
+      if (packageData.length > 0) {
+        this.availableDistributions = packageData;
       }
 
     });
 
   }
 
-  setReqeustFieldDistro(){
+  setReqeustFieldDistro() {
     this.reqeustFieldDistro = this.distributionFormFieldControl.value ? this.distributionFormFieldControl.value : '';
   }
 
-  setReqeustFieldRelease(){
+  setReqeustFieldRelease() {
     this.reqeustFieldRelease = this.releaseFormFieldControl.value ? this.releaseFormFieldControl.value : '';
   }
 
-  setReqeustFieldArch(){
+  setReqeustFieldArch() {
     this.reqeustFieldArch = this.architectureFormFieldControl.value ? this.architectureFormFieldControl.value : '';
   }
 
@@ -97,6 +131,7 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.releaseFormFieldControl.disable();
       this.architectureFormFieldControl.disable();
       this.packagenameFormFieldControl.disable();
+      this.filenameFormFieldControl.disable();
       return;
     }
 
@@ -106,18 +141,18 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.enableInput();
 
 
-      if (this.architectureFormFieldControl.value){
-        if (this.releaseFormFieldControl.value){
+      if (this.architectureFormFieldControl.value) {
+        if (this.releaseFormFieldControl.value) {
           const releaseHasArch = this.releaseFormFieldControl.value.components
             .find(component => component.archs.includes(this.architectureFormFieldControl.value)).length;
-          if (!releaseHasArch){
+          if (!releaseHasArch) {
             this.availableReleases = selectedDistribution.releaseNames
               .filter(release => release.components.find(component => component.archs.includes(this.architectureFormFieldControl.value)));
           }
         }
         else this.availableReleases = selectedDistribution.releaseNames
           .filter(release => release.components.find(component => component.archs.includes(this.architectureFormFieldControl.value)));
-      }else{
+      } else {
         this.availableReleases = selectedDistribution.releaseNames;
       }
 
@@ -126,6 +161,7 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.releaseFormFieldControl.disable();
       this.architectureFormFieldControl.disable();
       this.packagenameFormFieldControl.disable();
+      this.filenameFormFieldControl.disable();
 
     }
   }
@@ -139,6 +175,7 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.releaseFormFieldControl.disable();
       this.architectureFormFieldControl.disable();
       this.packagenameFormFieldControl.disable();
+      this.filenameFormFieldControl.disable();
       return;
     }
 
@@ -147,11 +184,11 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.architectureFormFieldControl.enable();
       this.enableInput();
 
-      if (selectedRelease && selectedRelease?.components?.length > 0){
-        if (this.architectureFormFieldControl.value){
+      if (selectedRelease && selectedRelease?.components?.length > 0) {
+        if (this.architectureFormFieldControl.value) {
           const releaseHasArch = selectedRelease.components
             .filter(archsObj => archsObj?.archs?.length > 0 && archsObj.archs.includes(this.architectureFormFieldControl.value)).length
-          if (!releaseHasArch){
+          if (!releaseHasArch) {
             const archs = [];
             selectedRelease.components
               .filter(archsObj => archsObj?.archs?.length > 0)
@@ -167,21 +204,22 @@ export class MainViewComponent implements AfterViewInit, OnInit {
         }
       } else {
         const archs = [];
-        selectedDistribution?.releaseNames.forEach( release => {
-            release.components
-              .filter(archsObj => archsObj?.archs?.length > 0)
-              .forEach(archsObj => archsObj.archs.filter(arch => arch && arch !== 'all').forEach(arch => archs.push(arch)));
-          }
+        selectedDistribution?.releaseNames.forEach(release => {
+          release.components
+            .filter(archsObj => archsObj?.archs?.length > 0)
+            .forEach(archsObj => archsObj.archs.filter(arch => arch && arch !== 'all').forEach(arch => archs.push(arch)));
+        }
         );
         this.availableArchitectures = Array.from(new Set(archs));
       }
 
 
-    }else {
+    } else {
       // TODO: show error msg
       this.releaseFormFieldControl.disable();
       this.architectureFormFieldControl.disable();
       this.packagenameFormFieldControl.disable();
+      this.filenameFormFieldControl.disable();
 
     }
 
@@ -192,37 +230,70 @@ export class MainViewComponent implements AfterViewInit, OnInit {
       this.packagenameFormFieldControl.enable();
     } else if (this.packagenameFormFieldControl.enabled && this.packagenameFormFieldControl.value) {
 
-      this.triggerSearch(this.packagenameFormFieldControl.value)
+      this.triggerPackageSearch(this.packagenameFormFieldControl.value)
     }
+
+    if (this.filenameFormFieldControl.disabled) {
+      this.filenameFormFieldControl.enable();
+    } else if (this.filenameFormFieldControl.enabled && this.filenameFormFieldControl.value) {
+
+      this.triggerFileSearch(this.filenameFormFieldControl.value)
+    }
+
   }
 
-  triggerSearch(packageName) {
-    this.isLoading = true;
+  triggerPackageSearch(packageName: string) {
+    this.isPackageSearchLoading = true;
     const distro = this.distributionFormFieldControl.value.distro,
       release = this.releaseFormFieldControl.value ? this.releaseFormFieldControl.value.release : '',
       arch = this.architectureFormFieldControl.value
 
-    return this.scriptyApi.packageSearch(distro, release, packageName, arch)
+    return this.scriptyApi.packageSearch(distro, release, packageName, arch, this.packagenameMatchMode)
       .subscribe((response) => {
-        this.userInput = {
+        this.packageUserInput = {
           distroField: this.distributionFormFieldControl.value.distro,
           packageNameField: this.packagenameFormFieldControl.value
         };
-        this.isLoading = false;
-        if (response.status !== 'success'){
+        this.isPackageSearchLoading = false;
+        if (response.status !== 'success') {
           this.errorMsg = response;
-        }else{
+        } else {
           this.errorMsg = null;
           this.releaseArchCols = [];
           if (!release) this.releaseArchCols.push('Release')
           if (!arch) this.releaseArchCols.push('Architecture')
-          this.data = response.result;
-          console.log(this.data);
+          this.packageData = response.result;
+          console.log(this.packageData);
         }
 
       })
 
   }
+
+  triggerFileSearch(fileName: string) {
+    this.isFileSearchLoading = true;
+    const distro = this.distributionFormFieldControl.value.distro,
+      release = this.releaseFormFieldControl.value ? this.releaseFormFieldControl.value.release : '',
+      arch = this.architectureFormFieldControl.value
+
+    return this.scriptyApi.fileSearch(distro, release, fileName, arch, this.filenameMatchMode)
+      .subscribe((response) => {
+        this.isFileSearchLoading = false;
+
+        if (response.status !== 'success') {
+          this.errorMsg = response;
+        } else {
+          this.errorMsg = null;
+          this.fileData = response.result;
+          console.log(this.fileData)
+        }
+
+      })
+
+  }
+
+
+
   resetFiltered() {
     this.availableReleases = [];
     this.availableArchitectures = [];
